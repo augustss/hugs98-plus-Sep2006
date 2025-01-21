@@ -196,10 +196,18 @@ Bignum n; {
 		while (nonNull(ds=tl(ds))) {
 		    Int d = digitOf(hd(ds));
 		    if (b > (Int)(MAXHUGSWORD/BIGBASE))
-			return NIL;
+#if 0
+                      return NIL;
+#else
+                      fprintf(stderr, "Warning: bigToInt overflow ignored\n");
+#endif
 		    b *= BIGBASE;
 		    if (d > (Int)((MAXHUGSWORD - m)/b))
-			return NIL;
+#if 0
+                      return NIL;
+#else
+                      fprintf(stderr, "Warning: bigToInt overflow ignored\n");
+#endif
 		    m += b*d;
 		}
 	    } else { /* fst(n)==NEGNUM */
@@ -207,10 +215,18 @@ Bignum n; {
 		while (nonNull(ds=tl(ds))) {
 		    Int d = - digitOf(hd(ds));
 		    if (b > (MAXPOSINT/BIGBASE))
-			return NIL;
+#if 0
+                      return NIL;
+#else
+                      fprintf(stderr, "Warning: bigToInt overflow ignored\n");
+#endif
 		    b *= BIGBASE;
 		    if (d < (MINNEGINT - m)/b)
-			return NIL;
+#if 0
+                      return NIL;
+#else
+                      fprintf(stderr, "Warning: bigToInt overflow ignored\n");
+#endif
 		    m += b*d;
 		}
 	    }
