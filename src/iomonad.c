@@ -60,8 +60,8 @@ extern Void local pushString       Args((String));
  * ------------------------------------------------------------------------*/
 
 static Void iomonadControl Args((Int));
-static Void iomonadControl(what)
-Int what; {
+static Void iomonadControl(Int what)
+{
     switch (what) {
 	case INSTALL : 
 		       setCurrModule(modulePrelude);
@@ -357,9 +357,8 @@ primFun(primPass) {			/* Auxiliary function		   */
 #if IO_HANDLES
 
 static
-Int local newHandle(sCell,loc) /* return a free Handle or throw an IOError */
-Cell   *sCell;
-String loc; {
+Int local newHandle(Cell *sCell,String loc) /* return a free Handle or throw an IOError */
+{
     Int i;
 
     for (i=0; i<(Int)MAX_HANDLES && nonNull(handles[i].hcell); ++i)
@@ -394,9 +393,8 @@ String loc; {
 }
 
 static
-String local modeString(hmode,binary) /* return mode string for f(d)open */
-Int  hmode;
-Bool binary; {
+String local modeString(Int hmode,Bool binary) /* return mode string for f(d)open */
+{
     if (binary) {
 	return (hmode&HAPPEND)    ? "ab"  :
 	       (hmode&HWRITE)     ? "wb"  :
@@ -411,12 +409,9 @@ Bool binary; {
 }
 
 static
-Cell local openHandle(root,sCell,hmode,binary,loc) /* open handle to file named s in  */
-StackPtr root;
-Cell   *sCell;                                     /* the specified hmode  */
-Int    hmode;
-Bool   binary;
-String loc; {
+Cell local openHandle(StackPtr root,Cell *sCell,Int hmode,Bool binary,String loc) /* open handle to file named s in  */
+                                     /* the specified hmode  */
+{
     Int i;
     String s = evalName(*sCell);
     String stmode = modeString(hmode,binary);
@@ -459,12 +454,8 @@ String loc; {
 }
 
 static
-Cell local openFdHandle(root,fd,hmode,binary,loc) /* open handle to file desc fd in  */
-StackPtr root;
-Int    fd;					  /* the specified hmode  */
-Int    hmode;
-Bool   binary;
-String loc; {
+Cell local openFdHandle(StackPtr root,Int fd,Int hmode,Bool binary,String loc) /* open handle to file desc fd in  */
+{
     Int i = newHandle(NIL,loc);
     String stmode = modeString(hmode,binary);
 
@@ -596,8 +587,8 @@ static Void local checkWritable(Int h, String fname) {
  * Building strings:
  * ------------------------------------------------------------------------*/
 
-Void pushString(s)       /* push pointer to string onto stack */
-String s; {
+Void pushString(String s)       /* push pointer to string onto stack */
+{
     if (*s == '\0')
 	push(nameNil);
     else {
@@ -617,12 +608,11 @@ String s; {
  */
   
 Cell
-mkIOError(mbH, kind, loc, desc, mbF)
-Cell   *mbH;	/* a Handle or NULL */
-Name   kind;	/* an IOErrorType */
-String loc;
-String desc;
-Cell   *mbF;	/* a FilePath or NULL */
+mkIOError(Cell   *mbH,	/* a Handle or NULL */
+          Name   kind,	/* an IOErrorType */
+          String loc,
+          String desc,
+          Cell   *mbF)	/* a FilePath or NULL */
 {
     Cell str;
     push(nameIOError);
@@ -652,8 +642,7 @@ static Void local throwErrno(String fname, Bool isFile, Int h, Cell *mbF)
 /*
  * Map a libc error code to an IOError
  */
-static Name local toIOError(errc)
-int errc;
+static Name local toIOError(int errc)
 {
 #if HAVE_ERRNO_H  && !(__MWERKS__ && macintosh)
     switch(errc) {
@@ -680,9 +669,7 @@ int errc;
 /*
  * Map a libc error code to an IOError descriptive string
  */
-static String local toIOErrorDescr(errc,isFile)
-int   errc;
-Bool  isFile;
+static String local toIOErrorDescr(int errc,Bool isFile)
 {
 #if HAVE_ERRNO_H  && !(__MWERKS__ && macintosh)
     switch(errc) {
@@ -777,9 +764,8 @@ primFun(primSystem) {                   /* primSystem :: String -> IO Int  */
     IOReturn(mkInt(WEXITSTATUS(r)));
 }
 
-Void setHugsArgs(argc,argv)
-Int    argc;
-String argv[]; {
+Void setHugsArgs(Int argc,String argv[])
+{
     int i;
     Cell str;
 
@@ -902,8 +888,8 @@ primFun(primHContents) {		/* hGetContents :: Handle -> IO Str*/
     IOReturn(ap(nameHreader,IOArg(1)));
 }
 
-static int local getIOMode(mode)	/* From IOMode to internal form    */
-Cell mode; {
+static int local getIOMode(Cell mode)	/* From IOMode to internal form    */
+{
     Int    m = HCLOSED;
 
     eval(mode);				/* Eval IOMode			   */
@@ -921,10 +907,8 @@ Cell mode; {
     return m;
 }
 
-static Void local fopenPrim(root,binary,loc)/* Auxiliary function for          */
-StackPtr root;                              /* opening a file                  */
-Bool     binary;
-String   loc; {
+static Void local fopenPrim(StackPtr root,Bool binary,String loc)/* Auxiliary function for          */
+{
     Int    m;
 
     m = getIOMode(IOArg(1));

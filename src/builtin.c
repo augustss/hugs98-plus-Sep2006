@@ -1356,8 +1356,8 @@ primFun(primCmpDouble) {               /* Double compare primitive         */
 # define MAX_STRING FILENAME_MAX
 #endif
 
-String evalName(es)                     /* evaluate es :: [Char] and save  */
-Cell es; {                              /* in char array... return ptr to  */
+String evalName(Cell es)                     /* evaluate es :: [Char] and save  */
+{                              /* in char array... return ptr to  */
     static char buffer[MAX_STRING+1];   /* string or 0, if error occurs    */
     char	*bp = buffer;
     StackPtr    saveSp = sp;
@@ -1380,8 +1380,8 @@ Cell es; {                              /* in char array... return ptr to  */
  * Top-level printing mechanism:
  * ------------------------------------------------------------------------*/
 
-Void outputString(fp)                   /* Evaluate string on top of stack */
-FILE *fp; {                             /* and print it on fp              */
+Void outputString(FILE *fp)                   /* Evaluate string on top of stack */
+{                             /* and print it on fp              */
     StackPtr origSp = sp;
     for (;;) {
 	Cell temp = evalWithNoError(pop());
@@ -1576,8 +1576,8 @@ primFun(primRecEq) {
  * Auxilliary functions
  * ------------------------------------------------------------------------*/
 
-static Cell local followInd(c)    /* follow chain of indirections and CAFs */
-Cell c; {
+static Cell local followInd(Cell c)    /* follow chain of indirections and CAFs */
+{
     do {
 	switch (whatIs(c)) {
 	case INDIRECT : c = snd(c);
@@ -1735,9 +1735,7 @@ static HugsStablePtr  getStablePtr() {
 }
 
 static HugsStablePtr  lookupName Args((String, String));
-static HugsStablePtr  lookupName(q,n)
-String q;
-String n; { 
+static HugsStablePtr  lookupName(String q, String n) { 
     Name nm = findQualFun(findText(q), findText(n));
     Cell c;
     
@@ -1802,9 +1800,8 @@ static void putForeignPtr(HsForeignPtr x) {
     EEND;
 }
 
-static void returnIO(root,n) /* return in IO monad */
-HugsStackPtr root;
-int          n; {
+static void returnIO(HugsStackPtr root,int n) /* return in IO monad */
+{
     /* There should be n return values on the top of the stack */
     if (n == 0) {
 	push(nameUnit);

@@ -11,8 +11,8 @@
 
 static Void timeControl Args((Int));
 
-static Void timeControl(what)
-Int what; {
+static Void timeControl(Int what)
+{
 }
 
 /* --------------------------------------------------------------------------

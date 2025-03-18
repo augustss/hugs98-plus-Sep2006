@@ -11,8 +11,8 @@
 
 static Void dirControl Args((Int));
 
-static Void dirControl(what)
-Int what; {
+static Void dirControl(Int what)
+{
 }
 
 /* --------------------------------------------------------------------------
@@ -309,8 +309,8 @@ primFun(primDirExist) { /* FilePath -> IO Bool - check to see if directory exist
   IOBoolResult(isDirectory(s));
 }
 
-static Bool local isDirectory(s)
-String s; {
+static Bool local isDirectory(String s)
+{
   int rc;
   struct stat st;
 #ifdef _WIN32

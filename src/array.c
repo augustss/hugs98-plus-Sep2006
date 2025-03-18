@@ -61,8 +61,8 @@ static void outOfBounds() {
  * ------------------------------------------------------------------------*/
 
 static Void arrayControl Args((Int));
-static Void arrayControl(what)
-Int what; {
+static Void arrayControl(Int what)
+{
     switch (what) {
 	case INSTALL : 
 		       setCurrModule(modulePrelude);

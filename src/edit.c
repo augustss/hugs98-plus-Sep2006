@@ -7,9 +7,10 @@
 #include "strutil.h"
 #include "machdep.h"
 
-Bool startEdit(line,nm)    /* Start editor on file name at    */
-Int    line;               /* given line.  Both name and line */
-String nm; {               /* or just line may be zero        */
+Bool startEdit(Int line,String nm)
+                /* Start editor on file name at    */
+                /* given line.  Both name and line */
+{               /* or just line may be zero        */
     String editorCmd;
     String fullNm;
     Bool   expandedName = FALSE;

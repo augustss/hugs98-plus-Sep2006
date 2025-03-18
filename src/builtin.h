@@ -22,9 +22,9 @@ extern Cell   mkIOError Args((Cell *,Name,String,String,Cell *));
 
 #define PROTO_PRIM(name)      static Void name Args((StackPtr))
 #define EXT_PROTO_PRIM(name)  extern Void name Args((StackPtr))
-#define primFun(name)         static Void name(root) StackPtr root;
+#define primFun(name)         static Void name(StackPtr root)
 #define extPrimFun(name)      Void name(StackPtr root)
-#define primCAF(name)         static Void name(root) StackPtr root HUGS_unused;
+#define primCAF(name)         static Void name(StackPtr root HUGS_unused)
 #define primArg(n)            stack(root+n)
 
 /* IMPORTANT: the second element of an update must be written first.

@@ -74,9 +74,8 @@ static String  defaultArgv[] = { "Hugs" };  /* program name */
 /* --------------------------------------------------------------------------
  * UI interpreter initalization:
  * ------------------------------------------------------------------------*/
-static Void local initialize(argc,argv)
-Int    argc;
-String argv[]; {
+static Void local initialize(Int    argc,
+                             String argv[]) {
     startEvaluator();
 
     setLastEdit((String)0,0);
@@ -204,9 +203,7 @@ static Void printBanner()
 
 int main Args((Int, String []));       /* now every func has a prototype  */
 
-int main(argc,argv)
-int  argc;
-char *argv[]; {
+int main(int  argc, char *argv[]) {
 
     CStackBase = &argc;                 /* Save stack base for use in gc   */
 
@@ -309,10 +306,7 @@ static Void local forHelp() {
 /*
  * Poor man's path expansion: expand out ~/ 
  */
-static Void local expandPath(origPath,expandedPath,maxLen)
-String origPath;
-String expandedPath;
-unsigned int maxLen;
+static Void local expandPath(String origPath, String expandedPath, unsigned int maxLen)
 {
 
   if (!origPath) {
@@ -567,9 +561,7 @@ static Void local runmain() {
  * about an object.
  * ------------------------------------------------------------------------*/
 
-static String local objToStr(m,c)
-Module m;
-Cell   c; {
+static String local objToStr(Module m, Cell   c) {
 #if 1 || DISPLAY_QUANTIFIERS
     static char newVar[60];
     switch (whatIs(c)) {
@@ -656,8 +648,8 @@ static Void local info() {              /* describe objects                */
     setCurrModule(evMod);
 }
 
-static Void local describe(t)           /* describe an object              */
-Text t; {
+static Void local describe(Text t)           /* describe an object              */
+{
     Tycon  tc  = findTycon(t);
     Class  cl  = findClass(t);
     Name   nm  = findName(t);
@@ -817,8 +809,7 @@ Text t; {
     }
 }
 
-static Void local printSyntax(nm)
-Name nm; {
+static Void local printSyntax(Name nm) {
     Syntax sy = syntaxOf(nm);
     Text   t  = name(nm).text;
     String s  = textToStr(t);
@@ -839,8 +830,8 @@ Name nm; {
     }
 }
 
-static Void local showInst(in)          /* Display instance decl header    */
-Inst in; {
+static Void local showInst(Inst in)          /* Display instance decl header    */
+{
     Printf("instance ");
     if (nonNull(inst(in).specifics)) {
 	printContext(stdout,inst(in).specifics);
@@ -897,8 +888,7 @@ static Void local listNames() {         /* list names matching optional pat*/
 /* Size of (expanded) prompt buffer, should be more than enough.... */
 #define MAX_PROMPT_SIZE 1000
 
-Void promptForInput(moduleName)
-String moduleName; {
+Void promptForInput(String moduleName) {
     char promptBuffer[MAX_PROMPT_SIZE];
     char* fromPtr;
     char* toPtr;
@@ -953,9 +943,7 @@ static Void local autoReloadFiles() {
  * main read-eval-print loop, with error trapping:
  * ------------------------------------------------------------------------*/
 
-static Void local interpreter(argc,argv)/* main interpreter loop           */
-Int    argc;
-String argv[]; {
+static Void local interpreter(Int    argc, String argv[]) {/* main interpreter loop           */
     Int errorNumber = setjmp(catch_error);
 
     breakOn(TRUE);                      /* enable break trapping           */

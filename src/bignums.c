@@ -69,8 +69,7 @@ static Name nameIntToInteger;
 #endif
 
 static Void bignumControl Args((Int));
-static Void bignumControl(what)
-Int what; {
+static Void bignumControl(Int what) {
     switch (what) {
 	case MARK    : mark(bn);
 		       mark(bigRem);
@@ -109,8 +108,8 @@ static List   local digitsQrm Args((List,List));
  * Simple bignum primitives:
  *-------------------------------------------------------------------------*/
 
-Bignum bigInt(n)			/* convert Int to bignum	   */
-Int n; {
+Bignum bigInt(Int n)			/* convert Int to bignum	   */
+{
     if (n==0)
 	return ZERONUM;
     else {
@@ -131,8 +130,8 @@ Int n; {
     }
 }
 
-Bignum bigWord(n)		      /* convert Word to bignum	   */
-Unsigned n; {
+Bignum bigWord(Unsigned n)		      /* convert Word to bignum	   */
+{
     if (n==0)
 	return ZERONUM;
     else {
@@ -147,8 +146,8 @@ Unsigned n; {
     }
 }
 
-Bignum bigDouble(a)			/* convert double to bignum	   */
-double a; {
+Bignum bigDouble(double a)			/* convert double to bignum	   */
+{
     if (a==0) {
 	return ZERONUM;
     } else {
@@ -184,8 +183,8 @@ double a; {
  * in the range MINNEGINT..MAXHUGSWORD.
  */
 
-Cell bigToInt(n)			/* convert bignum to Int	   */
-Bignum n; {
+Cell bigToInt(Bignum n)			/* convert bignum to Int	   */
+{
     if (n!=ZERONUM) {
 	List ds = snd(n);
 	if (nonNull(ds)) {
@@ -236,8 +235,8 @@ Bignum n; {
     return mkInt(0);
 }
 
-double bigToDouble(n)			/* convert bignum to double	  */
-Bignum n; {
+double bigToDouble(Bignum n)			/* convert bignum to double	  */
+{
     if (n==ZERONUM)
 	return 0.0;
     else {
@@ -252,8 +251,8 @@ Bignum n; {
     }
 }
 
-Bignum bigStr(s)			/* convert String to bignum	   */
-String s; {				/* Surprisingly, this is GC safe   */
+Bignum bigStr(String s)			/* convert String to bignum	   */
+{				        /* Surprisingly, this is GC safe   */
     List   ds = NIL;			/* because ds is the only variable */
     String t  = s;			/* that needs marking, and always  */
     Int    i;				/* appears as the snd of each cons */
@@ -278,10 +277,10 @@ String s; {				/* Surprisingly, this is GC safe   */
     return isNull(ds) ? ZERONUM : pair((*s=='-' ? NEGNUM : POSNUM), ds);
 }
 
-Cell bigOut(a,s,b)			/* bignum output, prepend digits to*/
-Bignum a;				/* stream s			   */
-Cell   s;				/* GC safe; s is snd in each cons  */
-Bool   b; {				/* TRUE => wrap neg int in parens  */
+Cell bigOut(Bignum a, Cell s, Bool b)			/* bignum output, prepend digits to*/
+				/* stream s			   */
+				/* GC safe; s is snd in each cons  */
+{				/* TRUE => wrap neg int in parens  */
     if (a==ZERONUM)
 	return ap(consChar('0'),s);
     else {
@@ -315,10 +314,10 @@ Bool   b; {				/* TRUE => wrap neg int in parens  */
     }
 }
 
-Bignum bigShift(big,c,mult)		/* Digits 0 <= c, mult < BIGBASE   */
-Bignum big;				/* Calculate big*mult+c, if big>=0 */
-Int    c;				/*           big*mult-c, if big<0  */
-Int    mult; {				/* UPDATE big, DESTRUCTIVELY!	   */
+Bignum bigShift(Bignum big,Int c,Int mult)		/* Digits 0 <= c, mult < BIGBASE   */
+				/* Calculate big*mult+c, if big>=0 */
+				/*           big*mult-c, if big<0  */
+{				/* UPDATE big, DESTRUCTIVELY!	   */
     if (big==ZERONUM)
 	return (c==0) ? ZERONUM : pair(POSNUM,singleton(mkDigit(c)));
     else {
@@ -393,8 +392,8 @@ primFun(primNegInteger) {		/* Integer unary negate		   */
     updateRoot(bigNeg(whnfHead));
 }
 
-Bignum bigNeg(a)		        /* unary negation		   */
-Bignum a; {
+Bignum bigNeg(Bignum a)		        /* unary negation		   */
+{
     if (a==ZERONUM)
 	return ZERONUM;
     else
@@ -423,8 +422,8 @@ primFun(primCmpInteger) {		/* Integer comparison		   */
     }
 }
 
-Int bigCmp(a,b)				/* Compare bignums returning:	   */
-Bignum a, b; {				/* -1 if a<b,  +1 if a>b,  0 o/w   */
+Int bigCmp(Bignum a, Bignum b)				/* Compare bignums returning:	   */
+{				/* -1 if a<b,  +1 if a>b,  0 o/w   */
     if (a==ZERONUM)
 	return (b==ZERONUM) ? 0 : ((fst(b)==POSNUM) ? (-1) : 1);
     else if (fst(a)==NEGNUM)
@@ -439,8 +438,8 @@ Bignum a, b; {				/* -1 if a<b,  +1 if a>b,  0 o/w   */
 	    return digitsCmp(snd(a),snd(b));
 }
 
-static Int local digitsCmp(xs,ys)	/* Compare positive digit streams  */
-List xs, ys; {				/* -1 if xs<ys, +1 if xs>ys, 0 if= */
+static Int local digitsCmp(List xs, List ys)	/* Compare positive digit streams  */
+{				/* -1 if xs<ys, +1 if xs>ys, 0 if= */
     Int s = 0;
     for (; nonNull(xs) && nonNull(ys); xs=tl(xs), ys=tl(ys)) {
 	Int x = hd(xs);
@@ -457,8 +456,8 @@ List xs, ys; {				/* -1 if xs<ys, +1 if xs>ys, 0 if= */
  * Addition and subtraction:
  *-------------------------------------------------------------------------*/
 
-static Bignum local bigAdd(a,b)		/* Bignum addition		   */
-Bignum a, b; {
+static Bignum local bigAdd(Bignum a, Bignum b)		/* Bignum addition		   */
+{
     if (a==ZERONUM)
 	return b;
     else if (b==ZERONUM)
@@ -475,8 +474,8 @@ Bignum a, b; {
 	    return digitsSub(snd(b),snd(a));
 }
 
-static Bignum local bigSub(a,b)		/* Bignum subtraction		   */
-Bignum a, b; {
+static Bignum local bigSub(Bignum a, Bignum b)		/* Bignum subtraction		   */
+{
     if (a==ZERONUM)
 	return bigNeg(b);
     else if (b==ZERONUM)
@@ -493,9 +492,8 @@ Bignum a, b; {
 	    return digitsSub(snd(b),snd(a));
 }
 
-static Bignum local digitsAdd(sign,xs,ys)/* Addition of digit streams	   */
-Cell sign;
-List xs, ys; {
+static Bignum local digitsAdd(Cell sign,Bignum xs,Bignum ys)/* Addition of digit streams	   */
+{
     Cell nx = bn = pair(sign,NIL);
     Int  c  = 0;
     for (;;) {
@@ -536,8 +534,8 @@ List xs, ys; {
     return bn;
 }
 
-static Bignum local digitsSub(xs,ys)	/* Subtraction of digit streams    */
-List xs, ys; {
+static Bignum local digitsSub(List xs,List ys)	/* Subtraction of digit streams    */
+{
     Cell nx;
     Int  b  = 0;
     Int  lz = 0;
@@ -598,8 +596,8 @@ List xs, ys; {
  * Multiplication:
  *-------------------------------------------------------------------------*/
 
-static Bignum local bigMul(a,b)		/* Bignum multiply		   */
-Bignum a, b; {
+static Bignum local bigMul(Bignum a,Bignum b)		/* Bignum multiply		   */
+{
     if (a==ZERONUM || b==ZERONUM)	/* if either operand is zero, then */
 	return ZERONUM;			/* so is the result ...		   */
     else {				/* otherwise, use rule of signs:   */
@@ -632,8 +630,8 @@ Bignum a, b; {
  * Division:
  *-------------------------------------------------------------------------*/
 
-static Cell local bigQrm(a,b)		/* bignum quotient and remainder   */
-Bignum a, b; {
+static Cell local bigQrm(Bignum a,Bignum b)		/* bignum quotient and remainder   */
+{
     if (b==ZERONUM)			/* division by zero?		   */
 	return NIL;
     else if (a==ZERONUM)   		/* 0 `div` x == 0 `mod` x == 0	   */
@@ -655,8 +653,8 @@ Bignum a, b; {
     }
 }
 
-static List local digitsQrm(us,vs)	/* digits quotient and remainder   */
-List us, vs; {
+static List local digitsQrm(List us,List vs)	/* digits quotient and remainder   */
+{
     Bool gc = consGC;
     consGC  = TRUE;
     if (isNull(tl(vs))) {		/* single digit divisor		   */

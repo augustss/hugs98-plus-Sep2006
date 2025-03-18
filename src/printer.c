@@ -40,8 +40,8 @@ static Cell out;			/* GC'd var used by printer code   */
  * ------------------------------------------------------------------------*/
 
 static Void printerControl Args((Int));
-static Void printerControl(what)
-Int what; {
+static Void printerControl(Int what)
+{
     switch (what) {
 	case MARK    : mark(out);
 		       break;
@@ -124,9 +124,9 @@ primFun(primNPrint) {			/* print term without evaluation   */
     updOutRoot(primArg(1));
 }
 
-static Void local printer(pr,d)		/* Main part: primPrint/primNPrint */
-Name pr;				/* printer to use on components	   */
-Int  d; {				/* precedence level		   */
+static Void local printer(Name pr,Int d)		/* Main part: primPrint/primNPrint */
+				/* printer to use on components	   */
+{				/* precedence level		   */
     Int used = 0;			/* Output, in reverse, to "out"	   */
 
     allowBreak();
@@ -487,8 +487,8 @@ primFun(primNSPrint) {			/* print string without eval	   */
  * Auxiliary functions for printer(s):
  * ------------------------------------------------------------------------*/
 
-static Void local outName(nm)  /* output nm using parent field if possible */
-Name nm; {
+static Void local outName(Name nm)  /* output nm using parent field if possible */
+{
     Cell p = name(nm).parent;
     switch (whatIs(p)) {
 #ifdef VERBOSE_PRINT
@@ -513,8 +513,8 @@ Name nm; {
     outStr(textToStr(name(nm).text));
 }
 
-static Void local outVar(nm)		/* output nm as function symbol	   */
-Name nm; {
+static Void local outVar(Name nm)		/* output nm as function symbol	   */
+{
     String s = textToStr(name(nm).text);
     if ((isascii(*s) && isalpha(*s)) || *s=='_' || *s=='[' || *s=='(')
 	outName(nm);
@@ -525,8 +525,8 @@ Name nm; {
     }
 }
 
-static Void local outOp(nm)		/* output nm as operator symbol	   */
-Name nm; {
+static Void local outOp(Name nm)		/* output nm as operator symbol	   */
+{
     String s = textToStr(name(nm).text);
     if (isascii(s[0]) && isalpha(s[0])) {
 	outCh('`');
@@ -537,30 +537,29 @@ Name nm; {
 	outName(nm);
 }
 
-static Void local outStr(s)		/* output string s		   */
-String s; {
+static Void local outStr(String s)		/* output string s		   */
+{
     while (*s)
 	outCh(ExtractChar(s));
 }
 
-static Void local outPr(pr,d,e)		/* output expr e with printer pr,  */
-Name pr;				/* precedence d			   */
-Int  d;
-Cell e; {
+static Void local outPr(Name pr,Int d,Cell e)		/* output expr e with printer pr,  */
+				/* precedence d			   */
+
+{
     out           = ap(NIL,out);
     fst(out)      = ap(NIL,e);
     fst(fst(out)) = ap(pr,mkInt(d));
 }
 
-static Void local outLPr(pr,xs)		/* output list xs with printer pr  */
-Name pr;
-Cell xs; {
+static Void local outLPr(Name pr,Cell xs)		/* output list xs with printer pr  */
+{
     out      = ap(NIL,out);
     fst(out) = ap(pr,xs);
 }
 
-static Void local outException(ex)	/* Produce expr to print exception */
-Cell ex; {
+static Void local outException(Cell ex)	/* Produce expr to print exception */
+{
     outCh('{');
     if (isAp(ex) && fun(ex)==nameErrorCall) {
 	outStr("error ");
@@ -572,31 +571,30 @@ Cell ex; {
     outCh('}');
 }
 
-static Void local outBadRedex(rx)	/* Produce expr to print bad redex */
-Cell rx; {
+static Void local outBadRedex(Cell rx)	/* Produce expr to print bad redex */
+{
     outCh('{');
     outPr(nameNPrint,MIN_PREC,rx);
     outCh('}');
 }
 
-static Cell local printDException(ex)	/* Produce expression for exception*/
-Cell ex; {				/* with special handling	   */
+static Cell local printDException(Cell ex)	/* Produce expression for exception*/
+{				/* with special handling	   */
     if (isAp(ex) && fun(ex)==nameErrorCall)/* of {error str} exceptions    */
 	return arg(ex);
     else
 	return printException(ex,nameNil);
 }
 
-static Cell local printException(ex,rs)	/* produce expression for exception*/
-Cell ex, rs; {
+static Cell local printException(Cell ex,Cell rs)	/* produce expression for exception*/
+{
    out = NIL;
    outException(ex);
    return revOnto(out,rs);
 }
 
-Void abandon(what,ex)			/* abandon computation		   */
-String what;
-Cell   ex; {
+Void abandon(String what,Cell ex)			/* abandon computation		   */
+{
     push(printDException(ex));
     out   = NIL;
     outCh('\n');

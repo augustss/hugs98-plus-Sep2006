@@ -29,8 +29,7 @@ static struct cmd brkCmds[] =
     , {0,0}
     };
 
-static Void breakDialogue(s)
-String s;{
+static Void breakDialogue(String s) {
     String arg;
     Int n;
     char cmdstr[80];
