@@ -1,6 +1,8 @@
 #ifndef __HSFFI_H__
 #define __HSFFI_H__
 
+#include <inttypes.h>
+
 typedef unsigned char      hugs_uint8_t;
 typedef unsigned short     hugs_uint16_t;
 typedef unsigned int       hugs_uint32_t;
@@ -115,7 +117,7 @@ typedef void*          HsStablePtr;
 
 typedef int            HugsStackPtr;
 typedef void*          HugsForeign;   
-typedef int            HugsStablePtr;  
+typedef intptr_t       HugsStablePtr;  
 
 typedef void (*HugsPrim) (HugsStackPtr); /* primitive function	   */
 

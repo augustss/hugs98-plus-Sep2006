@@ -1818,9 +1818,8 @@ static void returnIO(HugsStackPtr root,int n) /* return in IO monad */
     IOReturn(top());
 }
 
-static void returnId(root,n) /* return in identity monad */
-HugsStackPtr root;
-int          n; {
+static void returnId(HugsStackPtr root,int n) /* return in identity monad */
+{
     /* There should be n return values on the top of the stack */
     if (n == 0) {
 	push(nameUnit);
@@ -1857,8 +1856,8 @@ int          n; {
     }
 }
 
-static int runIO(n)
-int n; {
+static int runIO(int n)
+{
     /* stack = argn : ... : arg1 : fun : rest */
     StackPtr old_sp   = sp - n - 1;
     Cell     temp     = NIL;
@@ -1888,8 +1887,8 @@ int n; {
     return 1;
 }    
 
-static void apMany(n)
-int n; {
+static void apMany(int n)
+{
     /* stack = argn : ... : arg1 : fun : rest */
     Int i;
     /* build application node */
@@ -1902,8 +1901,8 @@ int n; {
 
 static int runId Args((int));
 
-static int runId(n)
-int n; {
+static int runId(int n)
+{
     apMany(n);
     top() = ap(nameReturnIO,top());
     return runIO(0);
@@ -2251,7 +2250,7 @@ HugsAPI4* hugsAPI4() { /* build virtual function table */
 	api.runIO         = runIO;
 
 	/* free a stable pointer */	    			 
-	api.freeStablePtr = freeStablePtr;
+	api.freeStablePtr = (void*)freeStablePtr; /* LA XXXXX */
 
 	/* register the prim table */	    			 
 	api.registerPrims = registerPrims;
@@ -2392,13 +2391,13 @@ void hs_free_fun_ptr(HsFunPtr fp)
 
 /* Dummy entry */
 static Void builtinControl Args((Int));
-static Void builtinControl(what)
-Int what; {
+static Void builtinControl(Int what)
+{
 }
 static struct primInfo builtinPrims = { builtinControl, builtinPrimTable, 0 };
 
-Void builtIn(what)
-Int what; {
+Void builtIn(Int what)
+{
     switch (what) {
 	case INSTALL : 
 		       initAdjustor();

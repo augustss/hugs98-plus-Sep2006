@@ -671,8 +671,8 @@ static void local initConsCharTable() {
  * Get a character cons: follow the three-level lookup table.
  * If a level does not exist, allocate it.
  * ------------------------------------------------------------------------*/
-Cell consChar(c)                /* return application (:) c */
-Char c; {
+Cell consChar(Char c)                /* return application (:) c */
+{
     Int i, j, k;
     Cell **consCharTable_i;
     Cell *consCharTable_i_j;
@@ -764,8 +764,8 @@ static void local markConsCharTable() {
 
 #endif /* !UNICODE_CHARS */
 
-Void charOps(what)
-Int what; {
+Void charOps(Int what)
+{
     switch (what) {
 	case INSTALL : initCharTab();
 		       initConsCharTable();
